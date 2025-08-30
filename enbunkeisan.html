@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🍳塩分濃度逆算ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>🍳塩分濃度逆算ツール</h1>
+    <input id="target" type="number" placeholder="目標塩分濃度 (%)">
+    <input id="weight" type="number" placeholder="材料の重さ (g)">
+    <select id="seasoning">
+      <option value="salt">塩</option>
+      <option value="ajinomoto">味の素</option>
+      <option value="hondashi">ほんだし</option>
+      <option value="garasoup">丸鶏がらスープ</option>
+      <option value="tsuyu">つゆの素</option>
+    </select>
+    <button onclick="calculate()">必要量を計算</button>
+    <div class="result" id="result">結果がここに表示されます</div>
+
+    <!-- 戻るリンク -->
+    <p style="margin-top:20px;">
+      <a href="index.html">← ホームに戻る</a>
+    </p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
