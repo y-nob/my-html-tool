@@ -42,9 +42,39 @@ button:active {
 
 .result {
   margin-top: 15px;
-  font-size: 1.2rem;
+  font-size: 1rem;
   text-align: center;
   color: #333;
+}
+
+.highlight-row {
+  background-color: #ffeeba; /* 行：淡い黄色 */
+}
+
+.highlight-col {
+  background-color: #cce5ff; /* 列：淡い青色 */
+}
+
+.active {
+  background-color: #ffcccb !important; /* 選択セル：淡い赤 */
+  font-weight: bold;
+}
+
+
+table {
+  border-collapse: collapse;
+  margin-top: 20px;
+  width: 100%;
+}
+
+th, td {
+  border: 1px solid #999;
+  padding: 6px;
+  text-align: center;
+}
+
+th {
+  background: #eee;
 }
 
 a {
@@ -59,3 +89,4 @@ a {
 a:hover {
   background: #0056b3;
 }
+

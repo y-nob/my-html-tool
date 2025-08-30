@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📷露出計算ツール</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>📷露出計算ツール</h1>
+
+    <!-- ISO入力 -->
+    <label for="iso">ISO感度:</label>
+    <input id="iso" type="number" value="100" min="100" max="51200" step="100" placeholder="ISO感度 (100〜51200)">
+
+    <!-- 計算ボタン -->
+    <button onclick="renderMatrix()">EVマトリクスを計算</button>
+
+    <!-- 結果表示 -->
+    <div class="result" id="matrix">ここにEV表が表示されます</div>
+
+    <!-- 戻るリンク -->
+    <p style="margin-top:20px;">
+      <a href="index.html">← ホームに戻る</a>
+    </p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
