@@ -132,3 +132,34 @@ function recordDefecation() {
   const timestamp = getTimestamp();
   addLogRow("排便", timestamp);
 }
+
+// CSV出力
+function exportCSV() {
+  const rows = Array.from(logBody.querySelectorAll("tr"));
+  if (rows.length === 0) {
+    alert("ログがありません。");
+    return;
+  }
+
+  let csvContent = "イベント,日時\n";
+
+  rows.forEach(row => {
+    const cells = row.querySelectorAll("td");
+    const event = cells[0].textContent.replace(/"/g, '""');
+    const time = cells[1].textContent.replace(/"/g, '""');
+    csvContent += `"${event}","${time}"\n`;
+  });
+
+  // BOM（Byte Order Mark）を先頭に追加
+  const bom = "\uFEFF";
+  const blob = new Blob([bom + csvContent], { type: "text/csv;charset=utf-8;" });
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.setAttribute("href", url);
+  link.setAttribute("download", "niflec_log.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
