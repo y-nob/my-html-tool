@@ -42,6 +42,14 @@ button:active {
 
 .result {
   margin-top: 15px;
+  font-size: 1.4rem;
+  text-align: center;
+  color: #333;
+  font-weight: bold;
+}
+
+.result_matrix {
+    margin-top: 15px;
   font-size: 1rem;
   text-align: center;
   color: #333;
