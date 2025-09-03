@@ -40,6 +40,13 @@ button:active {
   background: #0056b3;
 }
 
+.honbun{
+  margin-top: 15px;
+  font-size: 1rem;
+  text-align: center;
+  color: #333;
+}
+
 .result {
   margin-top: 15px;
   font-size: 1.4rem;
@@ -49,7 +56,7 @@ button:active {
 }
 
 .result_matrix {
-    margin-top: 15px;
+  margin-top: 15px;
   font-size: 1rem;
   text-align: center;
   color: #333;
