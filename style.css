@@ -48,6 +48,13 @@ button:active {
   font-weight: bold;
 }
 
+.result_matrix {
+    margin-top: 15px;
+  font-size: 1rem;
+  text-align: center;
+  color: #333;
+}
+
 .highlight-row {
   background-color: #ffeeba; /* 行：淡い黄色 */
 }
