@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ニフレック服用タイマー</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>ニフレック服用タイマー</h1>
+    <!-- ツール説明-->
+    <p>ニフレックの服用タイミングを管理するためのタイマーです。<br>
+    1杯目、2杯目は15分、3杯目以降は10分間隔で12杯目までカウントダウンします。<br>
+    排便ボタンをクリックすると、排便のタイミングを記録します。</p>
+
+    <div class="result" id="cupDisplay">現在：未開始</div>
+    <div class="result" id="timeDisplay">残り時間：--:--</div>
+
+    <!-- プログレスバー -->
+    <div style="margin-top: 10px;">
+      <progress id="progressBar" value="0" max="100" style="width: 100%; height: 20px;"></progress>
+    </div>
+
+    <!-- 操作ボタン -->
+    <button onclick="startTimer()">スタート</button>
+    <button onclick="pauseTimer()">一時停止</button>
+    <button onclick="resetTimer()">クリア</button>
+    <button onclick="recordDefecation()">排便</button>
+
+    <!-- タイムスタンプ表示（表形式） -->
+    <table id="logTable" style="margin-top: 20px; width: 100%; border-collapse: collapse;">
+    <thead>
+        <tr>
+        <th style="border: 1px solid #999; padding: 6px;">イベント</th>
+        <th style="border: 1px solid #999; padding: 6px;">日時</th>
+        </tr>
+    </thead>
+    <tbody id="logBody">
+        <!-- JSで行を追加 -->
+    </tbody>
+    </table>
+    
+    <!-- 戻るリンク -->
+    <p style="margin-top:20px;">
+      <a href="index.html">← ホームに戻る</a>
+    </p>
+
+  </div>
+
+  <script src="niflec-timer.js"></script>
+</body>
+</html>
