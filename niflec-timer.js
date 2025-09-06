@@ -51,6 +51,8 @@ function runCountdown() {
         cupDisplay.textContent = "服用完了 🎉";
         timeDisplay.textContent = "お疲れさまでした！";
         progressBar.value = 0;
+        // 服用完了のタイムスタンプをログに追加
+        addLogRow("服用完了", getTimestamp());
       }
       return;
     }
