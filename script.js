@@ -18,8 +18,9 @@ function calculate() {
     case "salt":
       amount = requiredSalt;
       break;
-    case "ajinomoto":
-      amount = requiredSalt / (0.15 / 0.5); // 0.15g salt per 0.5g
+    case "soy_sauce":
+      amount = requiredSalt / (2.5 / 15); // 0.15g salt per 0.5g
+      unit = "ml";
       break;
     case "hondashi":
       amount = requiredSalt / 0.40;
@@ -35,7 +36,7 @@ function calculate() {
 
   const label = {
     salt: "塩",
-    ajinomoto: "味の素",
+    soy_sauce: "濃口醤油",
     hondashi: "ほんだし",
     garasoup: "丸鶏がらスープ",
     tsuyu: "つゆの素"
