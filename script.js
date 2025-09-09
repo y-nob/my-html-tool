@@ -47,13 +47,24 @@ function calculate() {
 
 //　EV計算ツール
 // 絞り値とシャッタースピードの定義
-const apertures = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
+//const apertures = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
+// 絞り値を1/3段ステップで定義
+const apertures = [
+  1.0, 1.1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.5, 2.8,
+  3.2, 3.5, 4.0, 4.5, 5.0, 5.6, 6.3, 7.1, 8.0, 9.0,
+  10, 11, 13, 14, 16, 18, 20, 22
+];
+
 const shutterSpeeds = [1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000, 8000];
 
 // EV値の計算式
 function calculateEV(N, t, ISO) {
   return Math.round(Math.log2((N * N) / t) - Math.log2(ISO / 100));
 }
+
+// マトリクスの描画関数
+// フルストップの値リスト
+const fullStops = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11, 16, 22];
 
 // マトリクスの描画関数
 function renderMatrix() {
@@ -65,24 +76,65 @@ function renderMatrix() {
     return;
   }
 
-  let html = "<table id='evTable'><tr><th>SS\\F</th>";
-  apertures.forEach((a, colIndex) => {
-    html += `<th data-col="${colIndex}">F${a}</th>`;
+  let html = "<table id='evTable'><tr><th>F\\SS</th>";
+  shutterSpeeds.forEach((s, colIndex) => {
+    html += `<th data-col="${colIndex}">1/${s}</th>`;
   });
   html += "</tr>";
 
-  shutterSpeeds.forEach((s, rowIndex) => {
-    html += `<tr><th data-row="${rowIndex}">1/${s}</th>`;
-    apertures.forEach((a, colIndex) => {
+  apertures.forEach((a, rowIndex) => {
+    const label = fullStops.includes(a)
+      ? `<strong style="color:red;">F${a}</strong>`
+      : `F${a}`;
+    html += `<tr><th data-row="${rowIndex}">${label}</th>`;
+
+    shutterSpeeds.forEach((s, colIndex) => {
       const ev = calculateEV(a, 1 / s, iso);
       html += `<td data-row="${rowIndex}" data-col="${colIndex}" onclick="highlightMatrix(this)"> ${ev} </td>`;
     });
+
     html += "</tr>";
   });
 
   html += "</table>";
+
+  // 明るさの目安表を追加
+  html += `
+  <div class="ev-guide">
+    <h2>■明るさの目安</h2>
+    <table class="ev-table" id="evGuideTable">
+      <tr><th>EV値</th><th>明るさの目安</th></tr>
+      <tr data-ev="16"><td>EV16</td><td>真夏のビーチ、雪原</td></tr>
+      <tr data-ev="15"><td>EV15</td><td>快晴の屋外</td></tr>
+      <tr data-ev="14"><td>EV14</td><td>晴天の日陰</td></tr>
+      <tr data-ev="13"><td>EV13</td><td>薄日が差す屋外</td></tr>
+      <tr data-ev="12"><td>EV12</td><td>曇り空の屋外</td></tr>
+      <tr data-ev="11"><td>EV11</td><td>雨の日の屋外</td></tr>
+      <tr data-ev="10"><td>EV10</td><td>明るいショーウィンドウ</td></tr>
+      <tr data-ev="9"><td>EV9</td><td>昼間の室内（窓あり）</td></tr>
+      <tr data-ev="8"><td>EV8</td><td>エレベータ内</td></tr>
+      <tr data-ev="7"><td>EV7</td><td>体育館、ロビー</td></tr>
+      <tr data-ev="6"><td>EV6</td><td>廊下、控室</td></tr>
+      <tr data-ev="5"><td>EV5</td><td>休憩室、カフェ</td></tr>
+      <tr data-ev="4"><td>EV4</td><td>暗い室内、バー</td></tr>
+      <tr data-ev="3"><td>EV3</td><td>劇場の観客席</td></tr>
+      <tr data-ev="2"><td>EV2</td><td>映画館のスクリーン前</td></tr>
+      <tr data-ev="1"><td>EV1</td><td>日没直後の屋外</td></tr>
+      <tr data-ev="0"><td>EV0</td><td>薄明かりの部屋</td></tr>
+      <tr data-ev="-1"><td>EV-1</td><td>深夜の室内照明</td></tr>
+      <tr data-ev="-2"><td>EV-2</td><td>月明かりの屋外</td></tr>
+      <tr data-ev="-3"><td>EV-3</td><td>おぼろ月夜</td></tr>
+      <tr data-ev="-4"><td>EV-4</td><td>星空の下</td></tr>
+    </table>
+  </div>
+`;
+
+
+  
   container.innerHTML = html;
 }
+
+
 
 function highlightMatrix(cell) {
   const table = document.getElementById("evTable");
@@ -93,6 +145,9 @@ function highlightMatrix(cell) {
   // すべてのハイライトを解除
   table.querySelectorAll("td, th").forEach(el => {
     el.classList.remove("highlight-row", "highlight-col", "active");
+  });
+  document.querySelectorAll("#evGuideTable tr").forEach(el => {
+    el.classList.remove("highlight-guide");
   });
 
   // すでに選択されていた場合は解除だけで終了
@@ -108,5 +163,13 @@ function highlightMatrix(cell) {
 
   // 選択されたセルにアクティブマーク
   cell.classList.add("active");
+
+  // EV値を取得して目安表をハイライト
+  const evValue = parseInt(cell.textContent.trim());
+  const guideRow = document.querySelector(`#evGuideTable tr[data-ev="${evValue}"]`);
+  if (guideRow) {
+    guideRow.classList.add("highlight-guide");
+  }
 }
+
 

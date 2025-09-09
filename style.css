@@ -105,3 +105,34 @@ a:hover {
   background: #0056b3;
 }
 
+.ev-guide {
+  margin-top: 30px;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.ev-guide h2 {
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.ev-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.ev-table th, .ev-table td {
+  border: 1px solid #999;
+  padding: 6px;
+  text-align: center;
+}
+
+.ev-table th {
+  background-color: #f0f0f0;
+}
+
+.highlight-guide {
+  background-color: #ffcccb !important; /* 淡い赤で統一 */
+  font-weight: bold;
+}
