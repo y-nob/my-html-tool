@@ -47,13 +47,24 @@ function calculate() {
 
 //　EV計算ツール
 // 絞り値とシャッタースピードの定義
-const apertures = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
+//const apertures = [1, 1.4, 2, 2.8, 4, 5.6, 8, 11, 16, 22, 32];
+// 絞り値を1/3段ステップで定義
+const apertures = [
+  1.0, 1.1, 1.2, 1.4, 1.6, 1.8, 2.0, 2.2, 2.5, 2.8,
+  3.2, 3.5, 4.0, 4.5, 5.0, 5.6, 6.3, 7.1, 8.0, 9.0,
+  10, 11, 13, 14, 16, 18, 20, 22
+];
+
 const shutterSpeeds = [1, 2, 4, 8, 15, 30, 60, 125, 250, 500, 1000, 2000, 4000, 8000];
 
 // EV値の計算式
 function calculateEV(N, t, ISO) {
   return Math.round(Math.log2((N * N) / t) - Math.log2(ISO / 100));
 }
+
+// マトリクスの描画関数
+// フルストップの値リスト
+const fullStops = [1.0, 1.4, 2.0, 2.8, 4.0, 5.6, 8.0, 11, 16, 22];
 
 // マトリクスの描画関数
 function renderMatrix() {
@@ -67,22 +78,26 @@ function renderMatrix() {
 
   let html = "<table id='evTable'><tr><th>SS\\F</th>";
   apertures.forEach((a, colIndex) => {
-    html += `<th data-col="${colIndex}">F${a}</th>`;
+    // フルストップなら太字
+    const label = fullStops.includes(a) ? `<strong style="color:red;">F${a}</strong>` : `F${a}`;
+    html += `<th data-col="${colIndex}">${label}</th>`;
   });
   html += "</tr>";
 
   shutterSpeeds.forEach((s, rowIndex) => {
-    html += `<tr><th data-row="${rowIndex}">1/${s}</th>`;
-    apertures.forEach((a, colIndex) => {
-      const ev = calculateEV(a, 1 / s, iso);
-      html += `<td data-row="${rowIndex}" data-col="${colIndex}" onclick="highlightMatrix(this)"> ${ev} </td>`;
-    });
-    html += "</tr>";
+  html += `<tr><th data-row="${rowIndex}">1/${s}</th>`;
+  apertures.forEach((a, colIndex) => {
+    const ev = calculateEV(a, 1 / s, iso);
+    html += `<td data-row="${rowIndex}" data-col="${colIndex}" onclick="highlightMatrix(this)"> ${ev} </td>`;
   });
+  html += "</tr>";   // ← ダブルクォートに修正
+});
+
 
   html += "</table>";
   container.innerHTML = html;
 }
+
 
 function highlightMatrix(cell) {
   const table = document.getElementById("evTable");
