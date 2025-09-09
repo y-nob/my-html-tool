@@ -131,3 +131,8 @@ a:hover {
 .ev-table th {
   background-color: #f0f0f0;
 }
+
+.highlight-guide {
+  background-color: #ffcccb !important; /* 淡い赤で統一 */
+  font-weight: bold;
+}
