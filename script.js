@@ -76,27 +76,63 @@ function renderMatrix() {
     return;
   }
 
-  let html = "<table id='evTable'><tr><th>SS\\F</th>";
-  apertures.forEach((a, colIndex) => {
-    // フルストップなら太字
-    const label = fullStops.includes(a) ? `<strong style="color:red;">F${a}</strong>` : `F${a}`;
-    html += `<th data-col="${colIndex}">${label}</th>`;
+  let html = "<table id='evTable'><tr><th>F\\SS</th>";
+  shutterSpeeds.forEach((s, colIndex) => {
+    html += `<th data-col="${colIndex}">1/${s}</th>`;
   });
   html += "</tr>";
 
-  shutterSpeeds.forEach((s, rowIndex) => {
-  html += `<tr><th data-row="${rowIndex}">1/${s}</th>`;
-  apertures.forEach((a, colIndex) => {
-    const ev = calculateEV(a, 1 / s, iso);
-    html += `<td data-row="${rowIndex}" data-col="${colIndex}" onclick="highlightMatrix(this)"> ${ev} </td>`;
-  });
-  html += "</tr>";   // ← ダブルクォートに修正
-});
+  apertures.forEach((a, rowIndex) => {
+    const label = fullStops.includes(a)
+      ? `<strong style="color:red;">F${a}</strong>`
+      : `F${a}`;
+    html += `<tr><th data-row="${rowIndex}">${label}</th>`;
 
+    shutterSpeeds.forEach((s, colIndex) => {
+      const ev = calculateEV(a, 1 / s, iso);
+      html += `<td data-row="${rowIndex}" data-col="${colIndex}" onclick="highlightMatrix(this)"> ${ev} </td>`;
+    });
+
+    html += "</tr>";
+  });
 
   html += "</table>";
+
+  // 明るさの目安表を追加
+  html += `
+    <div class="ev-guide">
+      <h2>■明るさの目安</h2>
+      <table class="ev-table">
+        <tr><th>EV値</th><th>明るさの目安</th></tr>
+        <tr><td>EV16</td><td>真夏のビーチ、雪原</td></tr>
+        <tr><td>EV15</td><td>快晴の屋外</td></tr>
+        <tr><td>EV14</td><td>晴天の日陰</td></tr>
+        <tr><td>EV13</td><td>薄日が差す屋外</td></tr>
+        <tr><td>EV12</td><td>曇り空の屋外</td></tr>
+        <tr><td>EV11</td><td>雨の日の屋外</td></tr>
+        <tr><td>EV10</td><td>明るいショーウィンドウ</td></tr>
+        <tr><td>EV9</td><td>昼間の室内（窓あり）</td></tr>
+        <tr><td>EV8</td><td>エレベータ内</td></tr>
+        <tr><td>EV7</td><td>体育館、ロビー</td></tr>
+        <tr><td>EV6</td><td>廊下、控室</td></tr>
+        <tr><td>EV5</td><td>休憩室、カフェ</td></tr>
+        <tr><td>EV4</td><td>暗い室内、バー</td></tr>
+        <tr><td>EV3</td><td>劇場の観客席</td></tr>
+        <tr><td>EV2</td><td>映画館のスクリーン前</td></tr>
+        <tr><td>EV1</td><td>日没直後の屋外</td></tr>
+        <tr><td>EV0</td><td>薄明かりの部屋</td></tr>
+        <tr><td>EV-1</td><td>深夜の室内照明</td></tr>
+        <tr><td>EV-2</td><td>月明かりの屋外</td></tr>
+        <tr><td>EV-3</td><td>おぼろ月夜</td></tr>
+        <tr><td>EV-4</td><td>星空の下</td></tr>
+      </table>
+    </div>
+  `;
+
+  
   container.innerHTML = html;
 }
+
 
 
 function highlightMatrix(cell) {
