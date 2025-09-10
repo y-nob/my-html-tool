@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>📸被写界深度＋構図シミュレーション</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>📸被写界深度＋構図シミュレーション</h1>
+  <div class="container">
+    <p>焦点距離、F値、被写体距離、センサーサイズから被写界深度を計算し、構図をSVGで図示します。</p>
+
+    <label for="focalLength">焦点距離 (mm)</label>
+    <input type="number" id="focalLength" value="50">
+
+    <label for="fNumber">F値</label>
+    <input type="number" step="0.1" id="fNumber" value="2.8">
+
+    <label for="subjectDistance">被写体までの距離 (m)</label>
+    <input type="number" step="0.1" id="subjectDistance" value="5">
+
+    <label for="sensor">センサーサイズ</label>
+    <select id="sensor" onchange="updateSensorSpecs()">
+      <option value="full">フルフレーム</option>
+      <option value="aps_n">APS-C (Nikon/Sony)</option>
+      <option value="aps_c">APS-C (Canon)</option>
+      <option value="mft">MFT</option>
+    </select>
+
+    <label for="circleOfConfusion">許容錯乱円径 (mm)</label>
+    <input type="number" step="0.001" id="circleOfConfusion" value="0.030" readonly>
+
+    <label for="sensorSize">センサーサイズ (mm)</label>
+    <input type="text" id="sensorSize" value="36.0 × 24.0" readonly>
+
+    <button onclick="calculateAndRender()">計算＆描画</button>
+
+    <div class="result" id="dofResult"></div>
+    <div id="svgContainer" style="margin-top:20px; text-align:center;"></div>
+
+    <p style="margin-top:20px;">
+      <a href="index.html">← ホームに戻る</a>
+    </p>
+  </div>
+
+  <script>
+    const sensorSpecs = {
+      "full":   { name: "フルフレーム", coc: 0.030, width: 36.0, height: 24.0 },
+      "aps_n":  { name: "APS-C (Nikon/Sony)", coc: 0.020, width: 23.6, height: 15.7 },
+      "aps_c":  { name: "APS-C (Canon)", coc: 0.019, width: 22.3, height: 14.9 },
+      "mft":    { name: "MFT", coc: 0.015, width: 17.3, height: 13.0 }
+    };
+
+    function updateSensorSpecs() {
+      const key = document.getElementById("sensor").value;
+      const spec = sensorSpecs[key];
+      document.getElementById("circleOfConfusion").value = spec.coc.toFixed(3);
+      document.getElementById("sensorSize").value = `${spec.width.toFixed(1)} × ${spec.height.toFixed(1)}`;
+    }
+
+    function calculateAndRender() {
+      const f = parseFloat(document.getElementById("focalLength").value); // mm
+      const N = parseFloat(document.getElementById("fNumber").value);
+      const s = parseFloat(document.getElementById("subjectDistance").value) * 1000; // m → mm
+      const key = document.getElementById("sensor").value;
+      const spec = sensorSpecs[key];
+      const c = spec.coc;
+      const sensorW = spec.width;
+      const sensorH = spec.height;
+
+      if (isNaN(f) || isNaN(N) || isNaN(s) || isNaN(c)) {
+        document.getElementById("dofResult").innerText = "すべての項目を正しく入力してください。";
+        return;
+      }
+
+      // 被写界深度計算
+      const H = (f * f) / (N * c) + f; // mm
+      const Dn = (H * s) / (H + (s - f)); // mm
+      const Df = (H * s) / (H - (s - f)); // mm
+
+      const near = Dn / 1000; // m
+      const far = Df > 0 ? Df / 1000 : Infinity;
+      const total = (far === Infinity) ? "∞" : ((far - near).toFixed(3) + " m");
+
+      // 表示
+      document.getElementById("dofResult").innerHTML = `
+        <div class="result_matrix">
+          センサー：${spec.name}（${sensorW}mm × ${sensorH}mm）<br>
+          許容錯乱円径：${c.toFixed(3)} mm<br>
+          前方被写界深度：${near.toFixed(3)} m<br>
+          後方被写界深度：${far === Infinity ? "∞" : far.toFixed(3) + " m"}<br>
+          被写界深度：${total}
+        </div>
+      `;
+
+      // 構図描画
+      const d = s / 1000; // mm → m
+      const thetaH = 2 * Math.atan(sensorW / (2 * f));
+      const thetaV = 2 * Math.atan(sensorH / (2 * f));
+      const viewW = 2 * d * Math.tan(thetaH / 2); // m
+      const viewH = 2 * d * Math.tan(thetaV / 2); // m
+
+      const subjectW = 0.6; // m
+      const subjectH = 1.7; // m
+
+      const scale = 300 / viewH;
+      const svgW = viewW * scale;
+      const svgH = viewH * scale;
+      const subjW = subjectW * scale;
+      const subjH = subjectH * scale;
+      const subjX = (svgW - subjW) / 2;
+      const subjY = (svgH - subjH) / 2;
+
+      const nearY = svgH * (1 - (near / d));
+      const farY = svgH * (1 - (far / d));
+
+      const svg = `
+        <svg width="${svgW}" height="${svgH}" style="border:1px solid #999;">
+          <rect x="0" y="0" width="${svgW}" height="${svgH}" fill="#f0f0f0" />
+
+          <!-- 前方DOF帯 -->
+          <rect x="0" y="${nearY}" width="${svgW}" height="${svgH - nearY}" fill="#d4edda" opacity="0.5" />
+
+          <!-- 後方DOF帯 -->
+          <rect x="0" y="${farY}" width="${svgW}" height="${svgH - farY}" fill="#f8d7da" opacity="0.5" />
+
+          <!-- 被写体 -->
+          <rect x="${subjX}" y="${subjY}" width="${subjW}" height="${subjH}" fill="#007bff" opacity="0.6" />
+          <text x="${subjX + 5}" y="${subjY + 20}" font-size="14" fill="#333">被写体</text>
+        </svg>
+        <p class="result_matrix">
+          センサーに写る範囲：${viewW.toFixed(2)}m × ${viewH.toFixed(2)}m<br>
+          被写体サイズ：0.6m × 1.7m
+        </p>
+      `;
+
+      document.getElementById("svgContainer").innerHTML = svg;
+    }
+
+    // 初期化
+    window.onload = updateSensorSpecs;
+  </script>
+</body>
+</html>
