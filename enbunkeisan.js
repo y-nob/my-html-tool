@@ -19,7 +19,7 @@ function calculate() {
       amount = requiredSalt;
       break;
     case "soy_sauce":
-      amount = requiredSalt / (2.5 / 15); // 0.15g salt per 0.5g
+      amount = requiredSalt / (2.5 / 15); // 約0.15g塩分/1ml
       unit = "ml";
       break;
     case "hondashi":
@@ -32,6 +32,12 @@ function calculate() {
       amount = requiredSalt / (11.2 / 100);
       unit = "ml";
       break;
+    case "spice21":
+      amount = requiredSalt / (50.8 / 100);
+      break;
+    case "all_seasoning":
+      amount = requiredSalt / (73.9 / 100);
+      break;
   }
 
   const label = {
@@ -39,12 +45,10 @@ function calculate() {
     soy_sauce: "濃口醤油",
     hondashi: "ほんだし",
     garasoup: "丸鶏がらスープ",
-    tsuyu: "つゆの素"
+    tsuyu: "つゆの素",
+    spice21: "スパイス21",
+    all_seasoning: "オールシーズニング"
   };
 
   resultDiv.textContent = `「${label[seasoning]}」を約 ${amount.toFixed(2)} ${unit} 使用してください。`;
 }
-
-
-
-
