@@ -11,19 +11,10 @@
     <h1>🍳塩分濃度逆算ツール</h1>
     <input id="target" type="number" placeholder="目標塩分濃度 (%)">
     <input id="weight" type="number" placeholder="材料の重さ (g)">
-    <select id="seasoning">
-      <option value="salt">塩</option>
-      <option value="soy_sauce">濃口醤油</option>
-      <option value="hondashi">ほんだし</option>
-      <option value="garasoup">丸鶏がらスープ</option>
-      <option value="tsuyu">つゆの素</option>
-      <option value="spice21">スパイス21</option>
-      <option value="all_seasoning">オールシーズニング</option>
-    </select>
     <button onclick="calculate()">必要量を計算</button>
-    <div class="result" id="result">結果がここに表示されます</div>
+    <div class="result_matrix" id="result">結果がここに表示されます</div>
 
-    <p style="margin-top:20px;">
+    <p>
       <a href="index.html">← ホームに戻る</a>
     </p>
   </div>
