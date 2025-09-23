@@ -9,7 +9,10 @@
 <body>
   <div class="container">
     <h1>🍳塩分濃度逆算ツール</h1>
-    <input id="target" type="number" placeholder="目標塩分濃度 (%)">
+
+    <label for="target">目標塩分濃度 (%)</label>
+    <input id="target" type="number" placeholder="目標塩分濃度 (%)" value="0.8" step="0.1" min="0.1">
+    <label for="weight">材料の重さ (g)</label>
     <input id="weight" type="number" placeholder="材料の重さ (g)">
     <button onclick="calculate()">必要量を計算</button>
     <div class="result_matrix" id="result">結果がここに表示されます</div>
