@@ -2,101 +2,101 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>赤線長さ計算ツール</title>
-  <style>
-    body { font-family: sans-serif; text-align: center; }
-    svg { border: 1px solid black; margin-top: 10px; }
-    .label { margin: 5px; }
-    input[type=range] { width: 300px; }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📏赤線長さ計算ツール（メートル入力版）</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h2>赤線長さ計算ツール</h2>
+  <div class="container">
+    <h1>📏赤線長さ計算ツール</h1>
 
-  <div>
-    <label class="label">横の長さ: <input id="width" type="number" value="500"></label>
-    <label class="label">縦の長さ: <input id="height" type="number" value="300"></label>
+    <label for="width">横の長さ (m)</label>
+    <input id="width" type="number" value="5.0" step="0.01" min="0.01">
+
+    <label for="height">縦の長さ (m)</label>
+    <input id="height" type="number" value="3.0" step="0.01" min="0.01">
+
+    <label for="angleSlider">角度 (°)</label>
+    <input id="angleSlider" type="range" min="1" max="89" value="45" step="1" oninput="updateAngle(this.value)">
+    <div class="honbun">現在の角度: <span id="angleVal">45</span>°</div>
+
+    <button onclick="draw()">赤線を再計算</button>
+
+    <div class="result">赤線の長さ: <span id="redLength">--</span> m</div>
+
+    <svg id="canvas" width="600" height="400" style="margin-top:20px; border:1px solid #999;"></svg>
+
+    <p>
+      <a href="index.html">← ホームに戻る</a>
+    </p>
   </div>
 
-  <div>
-    <label>角度 (°): 
-      <input id="angleSlider" type="range" min="1" max="89" value="45" step="1" oninput="updateAngle(this.value)">
-      <span id="angleVal">45</span>
-    </label>
-  </div>
+  <script>
+    const M_TO_PX = 100; // 1m = 100px（例：スケール調整）
 
-  <p>赤線の長さ: <span id="redLength">--</span></p>
+    function updateAngle(val) {
+      document.getElementById("angleVal").textContent = val;
+      draw();
+    }
 
-  <svg id="canvas" width="600" height="400"></svg>
+    function draw() {
+      const w_m = parseFloat(document.getElementById("width").value);
+      const h_m = parseFloat(document.getElementById("height").value);
+      const angleDeg = parseFloat(document.getElementById("angleSlider").value);
+      const angle = angleDeg * Math.PI / 180;
 
-<script>
-function updateAngle(val) {
-  document.getElementById("angleVal").textContent = val;
-  draw();
-}
+      const w = w_m * M_TO_PX;
+      const h = h_m * M_TO_PX;
 
-function draw() {
-  const w = parseFloat(document.getElementById("width").value);
-  const h = parseFloat(document.getElementById("height").value);
-  const angleDeg = parseFloat(document.getElementById("angleSlider").value);
-  const angle = angleDeg * Math.PI / 180;
+      const svg = document.getElementById("canvas");
+      svg.setAttribute("width", w + 20);
+      svg.setAttribute("height", h + 20);
+      svg.innerHTML = "";
 
-  const svg = document.getElementById("canvas");
-  svg.setAttribute("width", w+20);
-  svg.setAttribute("height", h+20);
-  svg.innerHTML = "";
+      const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      rect.setAttribute("x", 10);
+      rect.setAttribute("y", 10);
+      rect.setAttribute("width", w);
+      rect.setAttribute("height", h);
+      rect.setAttribute("fill", "none");
+      rect.setAttribute("stroke", "black");
+      svg.appendChild(rect);
 
-  // 長方形
-  const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-  rect.setAttribute("x", 10);
-  rect.setAttribute("y", 10);
-  rect.setAttribute("width", w);
-  rect.setAttribute("height", h);
-  rect.setAttribute("fill", "none");
-  rect.setAttribute("stroke", "black");
-  svg.appendChild(rect);
+      const x1 = 10, y1 = 10;
+      const dx2 = x1 + w, dy2 = y1 + Math.tan(angle) * w;
 
-  // 左上 → 角度指定の黒線（長方形内に収めるため拡大）
-  const x1 = 10, y1 = 10;
-  let x2 = x1 + w * Math.cos(angle);
-  let y2 = y1 + h * Math.sin(angle);
+      const diag = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      diag.setAttribute("x1", x1);
+      diag.setAttribute("y1", y1);
+      diag.setAttribute("x2", dx2);
+      diag.setAttribute("y2", dy2);
+      diag.setAttribute("stroke", "black");
+      svg.appendChild(diag);
 
-  // 対角線の代わりに角度線を描画
-  const diag = document.createElementNS("http://www.w3.org/2000/svg", "line");
-  diag.setAttribute("x1", x1);
-  diag.setAttribute("y1", y1);
-  diag.setAttribute("x2", x1 + w);
-  diag.setAttribute("y2", y1 + Math.tan(angle) * w);
-  diag.setAttribute("stroke", "black");
-  svg.appendChild(diag);
+      const rx = 10 + w, ry = 10;
+      const dx = dx2 - x1;
+      const dy = dy2 - y1;
+      const len2 = dx * dx + dy * dy;
 
-  // 赤線を計算（右上から垂直におろす）
-  const rx = 10 + w, ry = 10; // 右上
-  const dx1 = x1, dy1 = y1;
-  const dx2 = x1 + w, dy2 = y1 + Math.tan(angle) * w;
+      const t = ((rx - x1) * dx + (ry - y1) * dy) / len2;
+      const projX = x1 + t * dx;
+      const projY = y1 + t * dy;
 
-  const dx = dx2 - dx1;
-  const dy = dy2 - dy1;
-  const len2 = dx*dx + dy*dy;
+      const red = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      red.setAttribute("x1", rx);
+      red.setAttribute("y1", ry);
+      red.setAttribute("x2", projX);
+      red.setAttribute("y2", projY);
+      red.setAttribute("stroke", "red");
+      red.setAttribute("stroke-width", 3);
+      svg.appendChild(red);
 
-  const t = ((rx-dx1)*dx + (ry-dy1)*dy) / len2;
-  const projX = dx1 + t*dx;
-  const projY = dy1 + t*dy;
+      const lengthPx = Math.sqrt((rx - projX) ** 2 + (ry - projY) ** 2);
+      const lengthM = lengthPx / M_TO_PX;
+      document.getElementById("redLength").textContent = lengthM.toFixed(3);
+    }
 
-  const red = document.createElementNS("http://www.w3.org/2000/svg", "line");
-  red.setAttribute("x1", rx);
-  red.setAttribute("y1", ry);
-  red.setAttribute("x2", projX);
-  red.setAttribute("y2", projY);
-  red.setAttribute("stroke", "red");
-  red.setAttribute("stroke-width", 3);
-  svg.appendChild(red);
-
-  const length = Math.sqrt((rx-projX)**2 + (ry-projY)**2);
-  document.getElementById("redLength").textContent = length.toFixed(2);
-}
-
-draw();
-</script>
+    draw();
+  </script>
 </body>
 </html>
