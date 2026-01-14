@@ -1,0 +1,12 @@
+{
+  "name": "exif-search",
+  "version": "1.0.0",
+  "description": "Electron app to search images by focal length using ExifTool",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^28.1.0"
+  }
+}
