@@ -15,6 +15,7 @@ function calculate() {
     soy_sauce: { label: "濃口醤油", saltRatio: 2.5 / 15, unit: "ml" },
     hondashi: { label: "ほんだし", saltRatio: 0.40, unit: "g" },
     garasoup: { label: "丸鶏がらスープ", saltRatio: 1.2 / 2.5, unit: "g" },
+    consomme: { label: "味の素コンソメ顆粒", saltRatio: 2.4 / 5.3, unit: "g" },
     tsuyu: { label: "つゆの素", saltRatio: 11.2 / 100, unit: "ml" },
     spice21: { label: "スパイス21", saltRatio: 50.8 / 100, unit: "g" },
     all_seasoning: { label: "オールシーズニング", saltRatio: 73.9 / 100, unit: "g" }
@@ -65,6 +66,7 @@ function calculateBlend() {
     soy_sauce: { label: "濃口醤油", saltRatio: 2.5 / 15, unit: "ml" },
     hondashi: { label: "ほんだし", saltRatio: 0.40, unit: "g" },
     garasoup: { label: "丸鶏がらスープ", saltRatio: 1.2 / 2.5, unit: "g" },
+    consomme: { label: "味の素コンソメ顆粒", saltRatio: 2.4 / 5.3, unit: "g" },
     tsuyu: { label: "つゆの素", saltRatio: 11.2 / 100, unit: "ml" },
     spice21: { label: "スパイス21", saltRatio: 50.8 / 100, unit: "g" },
     all_seasoning: { label: "オールシーズニング", saltRatio: 73.9 / 100, unit: "g" }
