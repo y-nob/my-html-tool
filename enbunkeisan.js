@@ -10,6 +10,14 @@ const SEASONINGS = {
   lemon_pepper: { label: "ハウス 香りソルト レモンペパーミックス", saltRatio: 30.7 / 55, unit: "g" }
 };
 
+function formatSeasoningLabel({ label, saltRatio }) {
+  const saltPer10 = 10 * saltRatio;
+  const formatted = Number.isInteger(saltPer10)
+    ? saltPer10
+    : parseFloat(saltPer10.toFixed(1));
+  return `${label}（${formatted}g）`;
+}
+
 function calculate() {
   const target = parseFloat(document.getElementById('target').value);
   const weight = parseFloat(document.getElementById('weight').value);
@@ -24,16 +32,17 @@ function calculate() {
 
   let tableHTML = `<table>
     <thead>
-      <tr><th>調味料</th><th>使用量</th><th>単位</th><th>ブレンド選択</th><th>ブレンド比率</th></tr>
+      <tr><th>調味料（10g/ml当たり相当量）</th><th>使用量</th><th>単位</th><th>ブレンド選択</th><th>ブレンド比率</th></tr>
     </thead>
     <tbody>`;
 
   for (const key in SEASONINGS) {
-    const { label, saltRatio, unit } = SEASONINGS[key];
+    const seasoning = SEASONINGS[key];
+    const { saltRatio, unit } = seasoning;
     const amount = requiredSalt / saltRatio;
     tableHTML += `
       <tr>
-        <td>${label}</td>
+        <td>${formatSeasoningLabel(seasoning)}</td>
         <td>${amount.toFixed(2)}</td>
         <td>${unit}</td>
         <td><input type="checkbox" class="blend-check" data-key="${key}"></td>
@@ -86,16 +95,17 @@ function calculateBlend() {
   let blendTable = `<h3>🧪ブレンド使用量</h3>
     <table>
       <thead>
-        <tr><th>調味料</th><th>使用量</th><th>単位</th><th>比率</th></tr>
+        <tr><th>調味料（10g/ml当たり相当量）</th><th>使用量</th><th>単位</th><th>比率</th></tr>
       </thead>
       <tbody>`;
 
   selected.forEach(({ key, ratio }) => {
-    const { label, saltRatio, unit } = SEASONINGS[key];
+    const seasoning = SEASONINGS[key];
+    const { saltRatio, unit } = seasoning;
     const saltShare = requiredSalt * (ratio / totalRatio);
     const amount = saltShare / saltRatio;
     blendTable += `<tr>
-      <td>${label}</td>
+      <td>${formatSeasoningLabel(seasoning)}</td>
       <td>${amount.toFixed(2)}</td>
       <td>${unit}</td>
       <td>${ratio}</td>
