@@ -1,3 +1,15 @@
+const SEASONINGS = {
+  salt: { label: "塩", saltRatio: 1.0, unit: "g" },
+  soy_sauce: { label: "濃口醤油", saltRatio: 2.5 / 15, unit: "ml" },
+  hondashi: { label: "ほんだし", saltRatio: 0.40, unit: "g" },
+  garasoup: { label: "丸鶏がらスープ", saltRatio: 1.2 / 2.5, unit: "g" },
+  consomme: { label: "味の素コンソメ顆粒", saltRatio: 2.4 / 5.3, unit: "g" },
+  tsuyu: { label: "つゆの素", saltRatio: 11.2 / 100, unit: "ml" },
+  spice21: { label: "スパイス21", saltRatio: 50.8 / 100, unit: "g" },
+  all_seasoning: { label: "オールシーズニング", saltRatio: 73.9 / 100, unit: "g" },
+  lemon_pepper: { label: "ハウス 香りソルト レモンペパーミックス", saltRatio: 30.7 / 55, unit: "g" }
+};
+
 function calculate() {
   const target = parseFloat(document.getElementById('target').value);
   const weight = parseFloat(document.getElementById('weight').value);
@@ -10,25 +22,14 @@ function calculate() {
 
   const requiredSalt = (target / 100) * weight;
 
-  const seasonings = {
-    salt: { label: "塩", saltRatio: 1.0, unit: "g" },
-    soy_sauce: { label: "濃口醤油", saltRatio: 2.5 / 15, unit: "ml" },
-    hondashi: { label: "ほんだし", saltRatio: 0.40, unit: "g" },
-    garasoup: { label: "丸鶏がらスープ", saltRatio: 1.2 / 2.5, unit: "g" },
-    consomme: { label: "味の素コンソメ顆粒", saltRatio: 2.4 / 5.3, unit: "g" },
-    tsuyu: { label: "つゆの素", saltRatio: 11.2 / 100, unit: "ml" },
-    spice21: { label: "スパイス21", saltRatio: 50.8 / 100, unit: "g" },
-    all_seasoning: { label: "オールシーズニング", saltRatio: 73.9 / 100, unit: "g" }
-  };
-
   let tableHTML = `<table>
     <thead>
       <tr><th>調味料</th><th>使用量</th><th>単位</th><th>ブレンド選択</th><th>ブレンド比率</th></tr>
     </thead>
     <tbody>`;
 
-  for (const key in seasonings) {
-    const { label, saltRatio, unit } = seasonings[key];
+  for (const key in SEASONINGS) {
+    const { label, saltRatio, unit } = SEASONINGS[key];
     const amount = requiredSalt / saltRatio;
     tableHTML += `
       <tr>
@@ -61,17 +62,6 @@ function calculateBlend() {
   const weight = parseFloat(document.getElementById('weight').value);
   const requiredSalt = (target / 100) * weight;
 
-  const seasonings = {
-    salt: { label: "塩", saltRatio: 1.0, unit: "g" },
-    soy_sauce: { label: "濃口醤油", saltRatio: 2.5 / 15, unit: "ml" },
-    hondashi: { label: "ほんだし", saltRatio: 0.40, unit: "g" },
-    garasoup: { label: "丸鶏がらスープ", saltRatio: 1.2 / 2.5, unit: "g" },
-    consomme: { label: "味の素コンソメ顆粒", saltRatio: 2.4 / 5.3, unit: "g" },
-    tsuyu: { label: "つゆの素", saltRatio: 11.2 / 100, unit: "ml" },
-    spice21: { label: "スパイス21", saltRatio: 50.8 / 100, unit: "g" },
-    all_seasoning: { label: "オールシーズニング", saltRatio: 73.9 / 100, unit: "g" }
-  };
-
   const selected = [];
   let totalRatio = 0;
 
@@ -101,7 +91,7 @@ function calculateBlend() {
       <tbody>`;
 
   selected.forEach(({ key, ratio }) => {
-    const { label, saltRatio, unit } = seasonings[key];
+    const { label, saltRatio, unit } = SEASONINGS[key];
     const saltShare = requiredSalt * (ratio / totalRatio);
     const amount = saltShare / saltRatio;
     blendTable += `<tr>
