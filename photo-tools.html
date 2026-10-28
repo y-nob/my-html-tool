@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📷露出・被写界深度ツール</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="photo-tools.css">
+</head>
+<body>
+  <div class="container wide">
+    <h1>📷露出・被写界深度ツール</h1>
+    <p class="honbun">撮影条件を入力すると、F値ごとの被写界深度とEV値を1つの表で確認できます。<br>表のセルをタップすると、その設定の詳細が表示されます。</p>
+
+    <!-- 共通入力 -->
+    <div class="input-grid">
+      <div>
+        <label for="iso">ISO感度</label>
+        <select id="iso">
+          <option value="100">100</option>
+          <option value="200">200</option>
+          <option value="400" selected>400</option>
+          <option value="800">800</option>
+          <option value="1600">1600</option>
+          <option value="3200">3200</option>
+          <option value="6400">6400</option>
+          <option value="12800">12800</option>
+          <option value="25600">25600</option>
+          <option value="51200">51200</option>
+        </select>
+      </div>
+      <div>
+        <label for="focalLength">焦点距離 (mm)</label>
+        <input type="number" id="focalLength" value="50" min="1" step="1">
+      </div>
+      <div>
+        <label for="subjectDistance">被写体までの距離 (m)</label>
+        <input type="number" id="subjectDistance" value="5" min="0.1" step="0.1">
+      </div>
+      <div>
+        <label for="sensor">センサーサイズ</label>
+        <select id="sensor">
+          <option value="full">フルフレーム</option>
+          <option value="aps_n">APS-C (Nikon/Sony)</option>
+          <option value="aps_c">APS-C (Canon)</option>
+          <option value="mft">MFT</option>
+        </select>
+      </div>
+    </div>
+    <div class="sensor-info" id="sensorInfo"></div>
+    <div class="error" id="error"></div>
+
+    <!-- 選択中の設定 -->
+    <div class="selection" id="selection">表のセルをタップすると、ここに詳細が表示されます。</div>
+
+    <!-- マトリクス -->
+    <div class="scroll-x" id="matrix"></div>
+
+    <!-- 明るさの目安 -->
+    <div class="ev-guide">
+      <h2>■明るさの目安</h2>
+      <table class="ev-table" id="evGuideTable"></table>
+    </div>
+
+    <p style="margin-top:20px;">
+      <a href="index.html">← ホームに戻る</a>
+    </p>
+  </div>
+
+  <script src="photo-tools.js"></script>
+</body>
+</html>

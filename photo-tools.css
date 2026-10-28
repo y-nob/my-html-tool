@@ -1,0 +1,86 @@
+/* photo-tools.html 専用（style.css の後に読み込む） */
+
+.container.wide {
+  max-width: 960px;
+}
+
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 12px;
+}
+
+.sensor-info {
+  margin-top: 8px;
+  font-size: 0.85rem;
+  color: #666;
+  text-align: center;
+}
+
+.error {
+  color: red;
+  text-align: center;
+  margin-top: 8px;
+}
+
+/* 選択中の設定 */
+.selection {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #ffcccb;
+  background: #fff8f8;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  text-align: center;
+}
+
+.selection .sel-title {
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+/* マトリクス */
+.scroll-x {
+  margin-top: 16px;
+  overflow-x: auto;
+}
+
+.matrix {
+  width: auto;
+  min-width: 100%;
+  margin-top: 0;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.matrix th,
+.matrix td {
+  padding: 4px 6px;
+}
+
+.matrix td[data-col] {
+  cursor: pointer;
+}
+
+/* F値列は横スクロール時も固定 */
+.matrix th.fcol {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: #eee;
+}
+
+/* 被写界深度の列（露出の列と色を分ける） */
+.matrix th.dof-head {
+  background: #e3f2e3;
+}
+
+.matrix td.dof-cell {
+  background: #f3faf3;
+}
+
+.matrix th.fcol.highlight-row,
+.matrix td.dof-cell.highlight-row {
+  background-color: #ffeeba;
+}
